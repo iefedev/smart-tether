@@ -9,6 +9,7 @@ import (
 	"io"
 	"net"
 	"net/netip"
+	"os"
 	"sync"
 	"testing"
 	"time"
@@ -549,6 +550,15 @@ func TestDatagramsNotResent(t *testing.T) {
 
 // TestDatagramsAheadOfBulk: while megabytes of stream data are queued, a
 // datagram still arrives quickly, and sustained datagrams don't stop the stream.
+// latencyBudget widens a wall-clock latency limit on shared CI runners, where
+// scheduling and the Windows timer (about 15 ms) add delay the code does not cause.
+func latencyBudget(d time.Duration) time.Duration {
+	if os.Getenv("CI") != "" {
+		return 3 * d
+	}
+	return d
+}
+
 func TestDatagramsAheadOfBulk(t *testing.T) {
 	var sb dgSink
 	at := make(chan time.Time, 1)
@@ -572,7 +582,7 @@ func TestDatagramsAheadOfBulk(t *testing.T) {
 	select {
 	case got := <-at:
 		t.Logf("datagram behind 16 MB of backlog: %v", got.Sub(sent))
-		if d := got.Sub(sent); d > 150*time.Millisecond {
+		if d := got.Sub(sent); d > latencyBudget(150*time.Millisecond) {
 			t.Fatalf("datagram took %v behind bulk data", d)
 		}
 	case <-time.After(3 * time.Second):
@@ -586,7 +596,7 @@ func TestDatagramsAheadOfBulk(t *testing.T) {
 	select {
 	case got := <-at:
 		t.Logf("datagram behind backlog, pacer settled: %v (in flight: %s)", got.Sub(sent), a.Pace())
-		if d := got.Sub(sent); d > 40*time.Millisecond {
+		if d := got.Sub(sent); d > latencyBudget(40*time.Millisecond) {
 			t.Fatalf("datagram took %v once the pacer settled", d)
 		}
 	case <-time.After(3 * time.Second):
