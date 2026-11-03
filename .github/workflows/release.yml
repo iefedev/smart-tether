@@ -71,7 +71,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Smart Tether ${{ github.ref_name }}
-          generate_release_notes: true
+          body: >-
+            Install **SmartTether-Setup.exe** on the PC (Windows 10/11 x64) and **SmartTether.apk**
+            on the phone (Android 12+, arm64); see the README. The PC and the phone must run the same
+            version.
           files: |
             build/release/SmartTether-Setup.exe
             build/release/SmartTether.apk
