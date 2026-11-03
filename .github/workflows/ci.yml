@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Go vet and tests
+        run: |
+          go vet ./...
+          if ($LASTEXITCODE) { exit 1 }
+          go test ./...
+          if ($LASTEXITCODE) { exit 1 }
+
+      - name: Windows service
+        run: |
+          go build -trimpath -o build/SmartTetherService.exe ./cmd/smart-tether-service
+          if ($LASTEXITCODE) { exit 1 }
+
+      - name: Tray app (Debug and Release)
+        run: |
+          dotnet build windows/SmartTether/SmartTether.csproj -c Debug -nologo
+          if ($LASTEXITCODE) { exit 1 }
+          dotnet build windows/SmartTether/SmartTether.csproj -c Release -nologo
+          if ($LASTEXITCODE) { exit 1 }
+
+      - name: gomobile
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile golang.org/x/mobile/cmd/gobind
+          if ($LASTEXITCODE) { exit 1 }
+          "$(go env GOPATH)\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Android debug APK
+        run: ./tools/build-android.ps1

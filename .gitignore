@@ -1,0 +1,16 @@
+.claude/
+bin/
+obj/
+build/
+*.apk
+*.aar
+*.jar
+!android/gradle/wrapper/gradle-wrapper.jar
+*.jks
+*.keystore
+keystore.properties
+.gradle/
+local.properties
+android/app/build/
+# Ad-hoc snapshot renders; README screenshots live in docs/screenshots/.
+docs/*.png

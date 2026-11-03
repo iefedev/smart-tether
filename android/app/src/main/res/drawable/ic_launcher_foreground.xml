@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher foreground (108dp canvas, art inside the 66dp safe zone): a phone linked to a laptop. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- laptop -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M36,42h36a3,3 0,0 1,3 3v20H33V45a3,3 0,0 1,3 -3zM37,46v15h34V46H37zM27,67h54v2.5a2.5,2.5 0,0 1,-2.5 2.5h-49A2.5,2.5 0,0 1,27 69.5V67z" />
+    <!-- phone, overlapping the screen's left edge -->
+    <path android:fillColor="#FF0F7B0F"
+        android:pathData="M28,36h14a4,4 0,0 1,4 4v26a4,4 0,0 1,-4 4H28a4,4 0,0 1,-4 -4V40a4,4 0,0 1,4 -4z" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M29,38h12a3,3 0,0 1,3 3v24a3,3 0,0 1,-3 3H29a3,3 0,0 1,-3 -3V41a3,3 0,0 1,3 -3zM29.5,41.5v23h11v-23h-11zM33,66h4v1.2h-4z" />
+</vector>

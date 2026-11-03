@@ -1,0 +1,138 @@
+<Window x:Class="SmartTether.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SmartTether"
+        Title="Smart Tether" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen">
+    <!-- Fixed width; the window takes the content's size and can't be resized.
+         The scroll bar only appears if the content is taller than the screen. -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Width="460" Margin="20,12,20,20">
+
+            <!-- Status -->
+            <Border Style="{StaticResource Card}" Padding="20,18">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <!-- Green tile when connected, red otherwise; the glyph shows USB or Wi-Fi in one fixed color. -->
+                        <Border x:Name="StatusTile" Width="48" Height="48" CornerRadius="8" Margin="0,0,14,0"
+                                Background="{StaticResource StatusBadBrush}">
+                            <TextBlock x:Name="StatusGlyph" Text="&#xE8EA;" FontFamily="{StaticResource IconFont}" FontSize="24"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="{StaticResource StatusGlyphBrush}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="PhoneName" Text="Your phone" FontSize="20" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock x:Name="Detail" Text="Looking for your phone…" Style="{StaticResource RowHint}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <UniformGrid Columns="3" Margin="0,18,0,14">
+                        <StackPanel Margin="0,0,8,0">
+                            <TextBlock Text="Download" Style="{StaticResource RowHint}" />
+                            <TextBlock x:Name="DownRate" Text="0" FontSize="26" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Mbit/s" Style="{StaticResource RowHint}" />
+                        </StackPanel>
+                        <StackPanel Margin="4,0">
+                            <TextBlock Text="Upload" Style="{StaticResource RowHint}" />
+                            <TextBlock x:Name="UpRate" Text="0" FontSize="26" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock Text="Mbit/s" Style="{StaticResource RowHint}" />
+                        </StackPanel>
+                        <StackPanel Margin="8,0,0,0">
+                            <TextBlock Text="This session" Style="{StaticResource RowHint}" />
+                            <TextBlock x:Name="Used" Text="0" FontSize="26" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <TextBlock x:Name="UsedUnit" Text="MB" Style="{StaticResource RowHint}" />
+                        </StackPanel>
+                    </UniformGrid>
+
+                    <!-- Fixed chart colors: the Windows accent may be gray, and the two series must differ. -->
+                    <local:RateChart x:Name="Chart" Height="90" DownBrush="#3A96DD" UpBrush="#9C7BD8"
+                                     GridBrush="{DynamicResource DividerStrokeColorDefaultBrush}" />
+                    <Grid Margin="0,8,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="10" Height="10" RadiusX="2" RadiusY="2" Fill="#3A96DD" VerticalAlignment="Center" />
+                            <TextBlock Text="Download" Style="{StaticResource RowHint}" Margin="6,0,14,0" />
+                            <Rectangle Width="10" Height="10" RadiusX="2" RadiusY="2" Fill="#9C7BD8" VerticalAlignment="Center" />
+                            <TextBlock Text="Upload" Style="{StaticResource RowHint}" Margin="6,0,0,0" />
+                        </StackPanel>
+                        <TextBlock x:Name="Peak" HorizontalAlignment="Right" Style="{StaticResource RowHint}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="Connection" Style="{StaticResource SectionHeader}" />
+
+            <Border Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock Text="&#xE968;" Style="{StaticResource RowIcon}" />
+                    <ComboBox x:Name="Preference" DockPanel.Dock="Right" Width="150" VerticalAlignment="Center"
+                              SelectionChanged="Preference_Changed">
+                        <ComboBoxItem Tag="auto" Content="Automatic" />
+                        <ComboBoxItem Tag="usb" Content="USB only" />
+                        <ComboBoxItem Tag="wifi" Content="Wi-Fi only" />
+                    </ComboBox>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Connect using" Style="{StaticResource RowTitle}" />
+                        <TextBlock Text="USB when plugged in, else Wi-Fi." Style="{StaticResource RowHint}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock Text="&#xE769;" x:Name="PauseGlyph" Style="{StaticResource RowIcon}" />
+                    <Button x:Name="PauseButton" DockPanel.Dock="Right" Content="Pause" MinWidth="96" Click="Pause_Click" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="PauseTitle" Text="Pause the tunnel" Style="{StaticResource RowTitle}" />
+                        <TextBlock x:Name="PauseHint" Text="Windows uses its other connections." Style="{StaticResource RowHint}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <TextBlock Text="Settings" Style="{StaticResource SectionHeader}" />
+
+            <Border Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock Text="&#xE7E8;" Style="{StaticResource RowIcon}" />
+                    <CheckBox x:Name="AutoStart" DockPanel.Dock="Right" Style="{StaticResource ToggleSwitch}" Click="AutoStart_Click" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Start with Windows" Style="{StaticResource RowTitle}" />
+                        <TextBlock Text="The tunnel comes up before you sign in." Style="{StaticResource RowHint}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock Text="&#xE945;" Style="{StaticResource RowIcon}" />
+                    <CheckBox x:Name="Quic" DockPanel.Dock="Right" Style="{StaticResource ToggleSwitch}" Click="Quic_Click" />
+                    <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock Text="Allow QUIC" Style="{StaticResource RowTitle}" />
+                        <TextBlock Text="HTTP/3 over UDP. Slower than TCP here." Style="{StaticResource RowHint}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock Text="&#xE71B;" Style="{StaticResource RowIcon}" />
+                    <Button x:Name="PairButton" DockPanel.Dock="Right" Content="Show code" MinWidth="96" Click="Pair_Click" />
+                    <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock Text="Pair a phone" Style="{StaticResource RowTitle}" />
+                        <TextBlock Text="Scan it in the phone app, or plug in USB." Style="{StaticResource RowHint}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <TextBlock x:Name="Error" Style="{StaticResource RowHint}" Margin="2,10,0,0" Visibility="Collapsed"
+                       Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+        </StackPanel>
+    </ScrollViewer>
+</Window>

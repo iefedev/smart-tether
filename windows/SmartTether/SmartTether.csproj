@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Native Windows 11 UI for Smart Tether: WPF with the built-in Fluent theme
+       (ThemeMode=System), a tray icon, and the main window. It talks to the
+       SmartTether service over its loopback API. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>SmartTether</AssemblyName>
+    <RootNamespace>SmartTether</RootNamespace>
+    <ApplicationIcon>SmartTether.ico</ApplicationIcon>
+    <Product>Smart Tether</Product>
+    <Authors>iefedev</Authors>
+    <Company>iefedev</Company>
+    <Copyright>Copyright (c) 2026 iefedev</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>0.2.0</Version>
+    <!-- Plain version string, without the git commit appended. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <!-- ThemeMode is marked experimental. -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <!-- Release: one self-contained exe, so a new PC needs no .NET install. Left uncompressed:
+       the installer's LZMA packs it smaller (56 vs 68 MB) and the tray starts faster. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+</Project>
